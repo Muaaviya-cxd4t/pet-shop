@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Good Boy — The good stuff for good pets</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="topline">GOOD THINGS FOR VERY GOOD PETS <span>✳</span> FREE SHIPPING ON ORDERS ABOVE ₹999</div>
+  <header class="header">
+    <a class="logo" href="#"><span class="logo-icon">✳</span><span>good<span>boy.</span><small>PET SUPPLY CLUB</small></span></a>
+    <nav><a href="#shop">Shop all</a><a href="#about">Our promise</a><a href="#reviews">Pet parents say</a></nav>
+    <a class="header-cart" href="#cart">Bag <span>{{ cart_count }}</span></a>
+  </header>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}<div class="flash-area">{% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+  {% endwith %}
+
+  <main>
+    <section class="hero">
+      <div class="hero-text"><div class="pill"><span>✳</span> THE PET PARENT'S HAPPY PLACE</div>
+        <h1>For the love<br>of <em>good pets.</em></h1>
+        <p>Good food. Great toys. Ridiculously happy tails. Everything your four-legged bestie needs, all in one very good place.</p>
+        <div class="hero-buttons"><a href="#shop" class="btn btn-dark">Shop the good stuff <span>↗</span></a><a href="#about" class="under-link">Why Good Boy?</a></div>
+        <div class="hero-proof"><div class="proof-icon">♡</div><div><strong>Made for the mischief-makers.</strong><small>Picked with care. Loved by pets.</small></div></div>
+      </div>
+      <div class="hero-visual"><div class="blob"></div><img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=1100&q=90" alt="Happy dog looking at the camera"><div class="round-stamp">GOOD<br>BOY CLUB<br><b>✳</b></div><div class="hero-note">BIG LOVE.<br>SMALL PAWS. <span>♥</span></div><div class="paw paw-one">✳</div><div class="paw paw-two">✳</div></div>
+      <div class="hero-bottom-note">HAPPY PETS, HAPPY HOMES — THAT'S THE WHOLE PLAN.</div>
+    </section>
+
+    <section class="benefits"><div><span>01</span><strong>Pet-parent approved</strong><small>Thoughtful picks for daily life.</small></div><div><span>02</span><strong>Good stuff only</strong><small>Quality goodies, no nonsense.</small></div><div><span>03</span><strong>Delivered with love</strong><small>Right to your doorstep.</small></div></section>
+
+    <section class="shop section" id="shop">
+      <div class="section-head"><div><span class="kicker">THE GOODIE AISLE</span><h2>Pick their <em>next favourite.</em></h2></div><p>For snack time, play time and<br>the sacred art of nap time.</p></div>
+      <div class="filters"><button class="filter active" data-filter="All">Everything</button><button class="filter" data-filter="Food">Food</button><button class="filter" data-filter="Treats">Treats</button><button class="filter" data-filter="Toys">Toys</button><button class="filter" data-filter="Accessories">Accessories</button></div>
+      <div class="product-grid">
+        {% for p in products %}
+        <article class="product-card" data-category="{{ p.category }}">
+          <div class="product-photo"><img src="{{ p.image }}" alt="{{ p.name }}" loading="lazy"><span class="product-tag">{{ p.tag }}</span><span class="photo-spark">✳</span></div>
+          <div class="product-details"><div class="product-type">{{ p.type }}</div><h3>{{ p.name }}</h3><p>{{ p.description }}</p><div class="product-buy"><strong>₹{{ p.price }}</strong><form method="post" action="{{ url_for('add', product_id=p.id) }}"><button class="add-btn" aria-label="Add {{ p.name }} to bag">+</button></form></div></div>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="promise section" id="about"><div class="promise-image"><img src="https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=1000&q=85" alt="Golden retriever enjoying the outdoors"><span class="image-label">A VERY GOOD LIFE <b>✳</b></span></div><div class="promise-copy"><span class="kicker">OUR VERY GOOD PROMISE</span><h2>Because they're<br>not <em>just pets.</em></h2><p>They're the welcome-home committee, the professional nap testers, the treat detectives and the best part of your day. We make it easier to give them the good stuff.</p><div class="promise-list"><div><b>✳</b><span><strong>Curated with care</strong><small>Useful, fun and pet-friendly picks.</small></span></div><div><b>✳</b><span><strong>For every kind of character</strong><small>Big dogs, tiny cats and everyone between.</small></span></div></div><a href="#shop" class="btn btn-dark">Find their favourite ↗</a></div></section>
+
+    <section class="quote" id="reviews"><span class="kicker">THE HUMANS HAVE SPOKEN</span><div class="quote-star">★★★★★</div><h2>Approved by the<br><em>furry management.</em></h2><p>“Ordered a toy for our dog. He ignored his expensive bed and played with the box. The toy is great too, apparently.”</p><strong>— A REALISTIC PET PARENT</strong></section>
+
+    <section class="cart-section section" id="cart">
+      <div class="section-head"><div><span class="kicker">THE GOODIE BAG</span><h2>Your pet's <em>little haul.</em></h2></div><p>{{ cart_count }} item{% if cart_count != 1 %}s{% endif %} in the bag</p></div>
+      {% if cart_items %}
+      <div class="cart-layout"><div class="cart-list">
+        {% for item in cart_items %}
+        <div class="cart-row"><img src="{{ item.image }}" alt="{{ item.name }}"><div class="cart-name"><strong>{{ item.name }}</strong><small>₹{{ item.price }} each</small></div><form class="qty-form" action="{{ url_for('update_cart', product_id=item.id) }}" method="post"><button type="button" class="minus">−</button><input type="number" name="quantity" min="0" max="20" value="{{ item.quantity }}"><button type="button" class="plus">+</button><button type="submit" class="update-link">Update</button></form><b class="row-total">₹{{ item.line_total }}</b></div>
+        {% endfor %}
+      </div><aside class="checkout-box"><span class="kicker">ORDER SUMMARY</span><div class="total-line"><span>Subtotal</span><b>₹{{ subtotal }}</b></div><div class="total-line"><span>Delivery</span><b>{% if subtotal >= 999 %}FREE{% else %}₹60{% endif %}</b></div><div class="grand-total"><span>Total</span><b>₹{{ subtotal + (0 if subtotal >= 999 else 60) }}</b></div><form action="{{ url_for('checkout') }}" method="post" class="checkout-form"><input name="name" placeholder="Pet parent's name" required><input name="phone" placeholder="Phone number" required><textarea name="address" placeholder="Delivery address" required></textarea><button class="btn btn-dark" type="submit">Place the order <span>♡</span></button></form><small class="demo-note">Demo checkout. No payment is collected.</small></aside></div>
+      {% else %}<div class="empty-bag"><div class="empty-paw">🐾</div><h3>It's a little empty in here.</h3><p>Time to make someone's tail wag.</p><a href="#shop" class="btn btn-dark">Fill the goodie bag ↗</a></div>{% endif %}
+    </section>
+  </main>
+  <footer><a class="logo footer-logo" href="#"><span class="logo-icon">✳</span><span>good<span>boy.</span><small>PET SUPPLY CLUB</small></span></a><p>Good pets. Good people. Good stuff. <b>♡</b></p><small>© 2026 Good Boy Pet Supply Club.</small></footer>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body></html>
